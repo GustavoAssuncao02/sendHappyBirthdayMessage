@@ -1,0 +1,1 @@
+This .py file performs automation of sending birthday messages on the WhatsApp messaging app, executed every day at 7 a.m. (scheduled for that time on the server), printing a report on the cmd screen, which is closed after user authorization.
