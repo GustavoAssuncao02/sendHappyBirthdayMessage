@@ -5,38 +5,38 @@ from datetime import datetime
 df = pd.read_excel(
     "C:/Users/Gustavo/Documents/TI/Projetos/sendHappyBirthdayMessage/Alunos.xlsx"
 )
-if "DatadeAniversario" not in df.columns:
+if "Birthday" not in df.columns:
     print(
-        "A coluna 'DatadeAniversario' não foi encontrada. Colunas disponíveis:",
+        "The 'Birthday' column was not found. Available columns:",
         df.columns,
     )
 else:
 
-    def enviar_mensagem(numero, nome):
-        mensagem = f"Olá {nome}, a Service Of Well Control gostaria de lhe desejar um feliz aniversário! 🎉🎂 Que o seu dia seja repleto de alegria e momentos especiais!"
-        print(f"Tentando enviar mensagem para {numero}")
+    def send_message(number, name):
+        message = f"Hello {name}, Service Of Well Control would like to wish you a happy birthday! 🎉🎂 May your day be filled with joy and special moments!"
+        print(f"Trying to send message to {number}")
         try:
             pywhatkit.sendwhatmsg_instantly(
-                numero, mensagem, wait_time=8, tab_close=True, close_time=8
+                number, message, wait_time=8, tab_close=True, close_time=8
             )
-            print(f"Mensagem enviada para {nome}, de número {numero}")
+            print(f"Message sent to {name}, number {number}")
         except Exception as e:
             print(
-                f"Falha ao enviar mensagem para o {nome}| de número: {numero} | código do erro: {e}"
+                f"Failed to send message to {name} | number: {number} | error code: {e}"
             )
 
-    hoje = datetime.now()
-    hoje_str = hoje.strftime("%m-%d")
+    today = datetime.now()
+    today_str = today.strftime("%m-%d")
     for index, row in df.iterrows():
-        aniversario = row["DatadeAniversario"]
-        if isinstance(aniversario, datetime):
-            aniversario_str = aniversario.strftime("%m-%d")
-            if aniversario_str == hoje_str:
-                numero = str(row["numero"])
-                if not numero.startswith("+"):
-                    numero = "+" + numero.strip()
-                enviar_mensagem(numero, row["nome"])
+        birthday = row["Birthday"]
+        if isinstance(birthday, datetime):
+            birthday_str = birthday.strftime("%m-%d")
+            if birthday_str == today_str:
+                number = str(row["number"])
+                if not number.startswith("+"):
+                    number = "+" + number.strip()
+                send_message(number, row["name"])
 
-    print("Processo concluído!")
+    print("Process completed!")
 
-    input("Pressione Enter para concluir o processo...")
+    input("Press Enter to complete the process...")
