@@ -13,7 +13,7 @@ if "DatadeAniversario" not in df.columns:
 else:
 
     def enviar_mensagem(numero, nome):
-        mensagem = f"Olá {nome}, a Service Of Well Control gostaria de lhe desejar um feliz aniversário!🎉🎂!! "
+        mensagem = f"Olá {nome}, a Service Of Well Control gostaria de lhe desejar um feliz aniversário! 🎉🎂 Que o seu dia seja repleto de alegria e momentos especiais!"
         print(f"Tentando enviar mensagem para {numero}")
         try:
             pywhatkit.sendwhatmsg_instantly(
