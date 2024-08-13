@@ -1,42 +1,66 @@
 import pandas as pd
 import pywhatkit
 from datetime import datetime
+import re
 
 df = pd.read_excel(
-    "C:/Users/Gustavo/Documents/TI/Projetos/sendHappyBirthdayMessage/Alunos.xlsx"
+    "C:/Users/Gustavo/Documents/TI/Projetos/sendHappyBirthdayMessage/Teste.xlsx"
 )
 if "DatadeAniversario" not in df.columns:
     print(
-        "The 'Birthday' column was not found. Available columns:",
+        "A coluna 'DatadeAniversario' não foi encontrada. Colunas disponíveis:",
         df.columns,
     )
+
+
+def limpar_numero(numero):
+    # Remove tudo que não é dígito
+    numero = re.sub(r"\D", "", numero)
+    # Se o número tiver 11 dígitos, remova o terceiro caractere
+    if len(numero) == 11:
+        numero = numero[:2] + numero[3:]
+    # Caso tenha um código de país e DDD, remova o '+55' se presente
+    if numero.startswith("55"):
+        numero = numero[2:]
+    if numero.startswith("+55"):
+        numero = numero[3:]
+    return numero
+
+
+def enviar_mensagem(numero, nome):
+    mensagem = f"Olá {nome}, a Service Of Well Control gostaria de lhe desejar um feliz aniversário!🎉🎂!! Que seu dia seja repleto de alegria e momentos especiais!!! "
+    print(f"Tentando enviar mensagem para {numero}")
+    try:
+        pywhatkit.sendwhatmsg_instantly(
+            numero, mensagem, wait_time=10, tab_close=True, close_time=8
+        )
+        print(f"Mensagem enviada para {nome}, de número {numero}")
+    except Exception as e:
+        print(
+            f"Falha ao enviar mensagem para o {nome} de número: {numero} | código do erro: {e}"
+        )
+
+
+hoje = datetime.now()
+hoje_str = hoje.strftime("%m-%d")
+aniversariantes_encontrados = False
+
+for index, row in df.iterrows():
+    aniversario = row["DatadeAniversario"]
+    if isinstance(aniversario, datetime):
+        aniversario_str = aniversario.strftime("%m-%d")
+        if aniversario_str == hoje_str:
+            aniversariantes_encontrados = True
+            numero = str(row["numero"]).strip()
+            numero = limpar_numero(numero)
+            if not numero.startswith("+"):
+                numero = "+55" + numero
+            enviar_mensagem(numero, row["nome"])
+
+if not aniversariantes_encontrados:
+    print("Não há aniversariantes hoje.")
+    input("Pressione Enter para concluir o processo...")
 else:
+    print("Processo concluído!")
 
-    def send_message(numero, nome):
-        message = f"Hello {nome}, Service Of Well Control would like to wish you a happy birthday! 🎉🎂 May your day be filled with joy and special moments!"
-        print(f"Trying to send message to {numero}")
-        try:
-            pywhatkit.sendwhatmsg_instantly(
-                numero, message, wait_time=8, tab_close=True, close_time=8
-            )
-            print(f"Message sent to {nome}, numero {numero}")
-        except Exception as e:
-            print(
-                f"Failed to send message to {nome} | numero: {numero} | error code: {e}"
-            )
-
-    today = datetime.now()
-    today_str = today.strftime("%m-%d")
-    for index, row in df.iterrows():
-        birthday = row["DatadeAniversario"]
-        if isinstance(birthday, datetime):
-            birthday_str = birthday.strftime("%m-%d")
-            if birthday_str == today_str:
-                numero = str(row["numero"])
-                if not numero.startswith("+"):
-                    numero = "+" + numero.strip()
-                send_message(numero, row["nome"])
-
-    print("Process completed!")
-
-    input("Press Enter to complete the process...")
+    input("Pressione Enter para concluir o processo...")
