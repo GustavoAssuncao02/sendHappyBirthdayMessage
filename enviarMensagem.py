@@ -2,10 +2,9 @@ import pandas as pd
 import pywhatkit
 from datetime import datetime
 import re
+import time
 
-df = pd.read_excel(
-    "C:/Users/Gustavo/Documents/TI/Projetos/sendHappyBirthdayMessage/Teste.xlsx"
-)
+df = pd.read_excel("C:/Users/USER/Documents/sendHappyBirthdayMessage/Alunos.xlsx")
 if "DatadeAniversario" not in df.columns:
     print(
         "A coluna 'DatadeAniversario' não foi encontrada. Colunas disponíveis:",
@@ -28,17 +27,24 @@ def limpar_numero(numero):
 
 
 def enviar_mensagem(numero, nome):
-    mensagem = f"Olá {nome}, a Service Of Well Control gostaria de lhe desejar um feliz aniversário!🎉🎂!! Que seu dia seja repleto de alegria e momentos especiais!!! "
+    mensagem = f"Olá {nome}, a Service Of Well Control gostaria de lhe desejar um feliz aniversário!🎉🎂!! Que seu dia seja repleto de alegria e momentos especiais!!!"
     print(f"Tentando enviar mensagem para {numero}")
     try:
         pywhatkit.sendwhatmsg_instantly(
-            numero, mensagem, wait_time=10, tab_close=True, close_time=8
+            numero,
+            mensagem,
+            wait_time=10,
+            tab_close=True,  # Fechar a aba após o envio da mensagem
+            close_time=10,  # Tempo para a aba permanecer aberta após o envio da mensagem
         )
         print(f"Mensagem enviada para {nome}, de número {numero}")
     except Exception as e:
         print(
             f"Falha ao enviar mensagem para o {nome} de número: {numero} | código do erro: {e}"
         )
+
+
+# Exemplo de uso
 
 
 hoje = datetime.now()
@@ -56,7 +62,7 @@ for index, row in df.iterrows():
             if not numero.startswith("+"):
                 numero = "+55" + numero
             enviar_mensagem(numero, row["nome"])
-
+            time.sleep(2)
 if not aniversariantes_encontrados:
     print("Não há aniversariantes hoje.")
     input("Pressione Enter para concluir o processo...")
